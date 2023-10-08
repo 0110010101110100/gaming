@@ -1,0 +1,113 @@
+
+class GameObject {
+  // Common attributes and methods shared by all entities
+};
+
+
+class Entity : public GameObject {
+  // Attributes and methods specific to entities
+};
+
+
+class Character : public Entity {
+  // Attributes and methods specific to characters
+};
+
+
+class Player : public Character {
+  // Attributes and methods specific to the player character
+};
+
+class NPC : public Character {
+  // Attributes and methods specific to non-playable characters
+};
+
+
+class Merchant : public NPC {
+  // Attributes and methods specific to merchant NPCs
+};
+
+class QuestGiver : public NPC {
+  // Attributes and methods specific to quest-giving NPCs
+};
+
+
+class Item : public Entity {
+  // Attributes and methods specific to items
+};
+
+class EnvironmentObject : public Entity {
+  // Attributes and methods specific to environmental objects
+};
+
+
+class Weapon : public Item {
+  // Attributes and methods specific to weapons
+};
+
+class Armor : public Item {
+  // Attributes and methods specific to armor
+};
+
+class Consumable : public Item {
+  // Attributes and methods specific to consumable items
+};
+
+
+class Terrain : public EnvironmentObject {
+  // Attributes and methods specific to terrain objects
+};
+
+class Prop : public EnvironmentObject {
+  // Attributes and methods specific to prop objects
+};
+
+class Door : public EnvironmentObject {
+  // Attributes and methods specific to door objects
+};
+
+
+class GameObject {
+protected:
+  Vector3 position;
+  Vector3 rotation;
+  Vector3 scale;
+
+public:
+  void setPosition(const Vector3& newPosition) {
+    position = newPosition;
+  }
+
+  void setRotation(const Vector3& newRotation) {
+    rotation = newRotation;
+  }
+
+  void update(float deltaTime) {
+    // Update the game object's state based on the elapsed time
+  }
+};
+
+
+class Entity : public GameObject {
+protected:
+  int entityID;
+  bool isVisible;
+
+public:
+  void interact(Entity* target) {
+    // Handle the interaction between this entity and the target entity
+  }
+
+  void render() {
+    // Render the visual representation of the entity on the screen
+  }
+
+  virtual void updateAI() {
+    // Update the artificial intelligence logic of the entity (can be overridden in derived classes)
+  }
+
+  virtual void applyPhysicsForces() {
+    // Apply physics forces to the entity for movement and collision (can be overridden in derived classes)
+  }
+};
+
