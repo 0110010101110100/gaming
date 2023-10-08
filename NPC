@@ -1,0 +1,269 @@
+
+#include <iostream>#include <string>#include <SFML/Graphics.hpp>
+
+class Character {
+public:
+    Character(const std::string& name, const sf::Vector2f& position, const sf::Vector2f& size)
+        : name(name), position(position), size(size) {}
+
+    void Move(float offsetX, float offsetY) {
+        position.x += offsetX;
+        position.y += offsetY;
+    }
+
+    const std::string& GetName() const { return name; }
+    const sf::Vector2f& GetPosition() const { return position; }
+    const sf::Vector2f& GetSize() const { return size; }
+
+private:
+    std::string name;
+    sf::Vector2f position;
+    sf::Vector2f size;
+};
+
+class NPC {
+public:
+    NPC(const std::string& name, const sf::Vector2f& position)
+        : name(name), position(position), targetPosition(position), state(State::Idle) {}
+
+void Update(float deltaTime, const Character& player) {
+    switch (state) {
+        case State::Idle:
+            IdleRoutine(deltaTime);
+            break;
+        case State::FollowPlayer:
+            FollowPlayerRoutine(deltaTime, player);
+            break;
+        case State::Custom:
+            CustomRoutine(deltaTime);
+            break;
+    }
+}
+
+void SetState(State newState) {
+    state = newState;
+}
+
+const std::string& GetName() const { return name; }
+const sf::Vector2f& GetPosition() const { return position; }
+
+enum class State {
+    Idle,
+    FollowPlayer,
+    Custom
+};
+
+void IdleRoutine(float deltaTime) {
+    // Example: Rotate the NPC in place
+    // ...
+}
+
+void CustomRoutine(float deltaTime) {
+    // Example: Change the color of the NPC over time
+    // ...
+}
+
+
+int main() {
+    sf::RenderWindow window(sf::VideoMode(800, 600), "NPC Behaviors & Routines");
+    sf::Clock clock;
+
+    Character player("Player", sf::Vector2f(100.0f, 100.0f), sf::Vector2f(50.0f, 50.0f));
+    NPC npc("NPC", sf::Vector2f(400.0f, 300.0f));
+
+    while (window.isOpen()) {
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed)
+                window.close();
+        }
+
+        float deltaTime = clock.restart().asSeconds();
+
+        npc.Update(deltaTime, player);
+
+        window.clear(sf::Color::White);
+
+        sf::RectangleShape playerRect(player.GetSize());
+        playerRect.setPosition(player.GetPosition());
+        playerRect.setFillColor(sf::Color::Green);
+        window.draw(playerRect);
+
+        sf::RectangleShape npcRect(sf::Vector2f(50.0f, 50.0f));
+        npcRect.setPosition(npc.GetPosition());
+        npcRect.setFillColor(sf::Color::Blue);
+        window.draw(npcRect);
+
+        window.display();
+    }
+
+    return 0;
+}
+
+struct Dialogue {
+    std::string characterLine;
+    std::vector<std::string> choices;
+    std::vector<std::string> responses;
+};
+
+class DialogManager {
+public:
+    void StartConversation(const std::vector<Dialogue>& dialogues) {
+        currentDialogueIndex = 0;
+        dialoguesList = dialogues;
+        DisplayCharacterLine();
+    }
+
+    void DisplayCharacterLine() {
+        const Dialogue& currentDialogue = dialoguesList[currentDialogueIndex];
+        std::cout << currentDialogue.characterLine << std::endl;
+        if (!currentDialogue.choices.empty()) {
+            DisplayChoices();
+        } else {
+            EndConversation();
+        }
+    }
+
+    void DisplayChoices() {
+        const Dialogue& currentDialogue = dialoguesList[currentDialogueIndex];
+        std::cout << "Choices:" << std::endl;
+        for (size_t i = 0; i < currentDialogue.choices.size(); ++i) {
+            std::cout << i + 1 << ". " << currentDialogue.choices[i] << std::endl;
+        }
+        WaitForPlayerChoice();
+    }
+
+    void WaitForPlayerChoice() {
+        int choice;
+        std::cin >> choice;
+        choice--; // Adjust index to match array indexing
+        const Dialogue& currentDialogue = dialoguesList[currentDialogueIndex];
+        if (choice >= 0 && choice < currentDialogue.responses.size()) {
+            std::cout << currentDialogue.responses[choice] << std::endl;
+            currentDialogueIndex++;
+            DisplayCharacterLine();
+        } else {
+            std::cout << "Invalid choice. Please choose again." << std::endl;
+            WaitForPlayerChoice();
+        }
+    }
+
+    void EndConversation() {
+        std::cout << "End of conversation." << std::endl;
+    }
+
+private:
+    std::vector<Dialogue> dialoguesList;
+    size_t currentDialogueIndex;
+};
+
+std::vector<Dialogue> dialogues = {
+    { "Hello, traveler! What can I do for you?", { "Ask about the quest", "Inquire about the village" }, { "The quest involves slaying a dragon.", "Our village is known for its peaceful community." } },
+    { "Are you interested in taking on the quest?", { "Yes, I'm up for the challenge", "No, not at the moment" }, { "Great! Prepare yourself for an epic adventure.", "No problem. Feel free to ask if you change your mind." } },
+    // Add more dialogues
+};
+
+int main() {
+    DialogManager dialogManager;
+    dialogManager.StartConversation(dialogues);
+    return 0;
+}
+class Character {
+public:
+    // ...
+
+    void Attack(Character& target) {
+        // Implement attack logic here
+        // This method represents the character's attack routine
+
+        // Example: Calculate damage and reduce target's health
+        int damage = CalculateDamage(); // Implement your own damage calculation method
+        target.ReduceHealth(damage);
+    }
+
+    void ReduceHealth(int amount) {
+        // Implement health reduction logic here
+        // This method reduces the character's health by the specified amount
+
+        health -= amount;
+        if (health <= 0) {
+            // Handle character's death or defeat
+        }
+    }
+
+    // ...
+
+private:
+    int health;
+    int attackDamage;
+};
+
+int main() {
+    // ...
+
+    while (window.isOpen()) {
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            // ...
+        }
+
+        float deltaTime = clock.restart().asSeconds();
+
+        // Update NPC movement
+        npc.UpdateMovement(deltaTime);
+
+        // Handle combat interactions
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+            if (player.CheckCollision(npc)) {
+                player.Attack(npc);
+            }
+        }
+
+        // ...
+    }
+
+    // ...
+}
+
+#include <SFML/Graphics.hpp>
+#include <iostream>
+
+class NPC {
+public:
+sf::Vector2f position; // Position of the NPC in 2D space
+// Constructor to initialize the NPC's position
+NPC(sf::Vector2f initialPosition) : position(initialPosition) {}
+
+// Render the NPC on the game window
+void render(sf::RenderWindow& window) {
+    sf::CircleShape npcShape(20); // Create a circle shape for the NPC
+    npcShape.setFillColor(sf::Color::Blue); // Set the fill color to blue
+    npcShape.setPosition(position); // Set the position of the NPC shape to its current position
+    window.draw(npcShape); // Draw the NPC shape on the game window
+}
+};
+
+int main() {
+sf::RenderWindow window(sf::VideoMode(800, 600), "NPC and Combat Visuals"); // Create the game window
+
+NPC npc(sf::Vector2f(400, 300)); // Create an instance of the NPC class with an initial position
+
+while (window.isOpen()) { // Main game loop starts
+    sf::Event event;
+    while (window.pollEvent(event)) { // Handle window events
+        if (event.type == sf::Event::Closed) {
+            window.close(); // Close the window if the user attempts to close it
+        }
+    }
+
+    window.clear(sf::Color::White); // Clear the window with a white background
+
+    npc.render(window); // Render the NPC on the game window
+
+    // Add code here to render combat visuals, like health bars or attack animations
+
+    window.display(); // Display the contents of the window
+} // Main game loop ends
+
+return 0;
+}
