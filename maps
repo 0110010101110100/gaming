@@ -1,0 +1,161 @@
+// Tile class representing a single tile in the game world
+class Tile {
+public:
+    int type;  // Type of the tile (e.g., grass, wall, water, etc.)
+    // Add additional properties as needed (e.g., collision, decoration, etc.)
+
+    // Constructor to initialize the tile with a specific type
+    Tile(int tileType) : type(tileType) {}
+};
+
+
+// Map class representing a game world map
+class Map {
+public:
+    std::vector<std::vector<Tile>> tiles;  // 2D grid of tiles
+
+    // Method to load map data from a file
+    void LoadMapFromFile(const std::string& filename) {
+        // Implement loading logic here
+        // For example, read map data from a file and populate the tiles vector.
+        // Each line in the file can represent a row of tiles, and each character in the line can represent a tile type.
+    }
+
+    // Method to render the map
+    void Render() {
+        // Implement rendering logic here
+        // For example, iterate through the tiles vector and render each tile based on its type.
+        // You can use a graphics library like SFML or SDL to handle the rendering.
+    }
+};
+
+
+// Player class representing the player character
+class Player {
+public:
+    int x;  // Player's X position on the map
+    int y;  // Player's Y position on the map
+
+    // Method to handle player movement
+    void Move(int dx, int dy) {
+        // Implement movement logic here
+        // For example, update the player's position based on the provided dx and dy values.
+        x += dx;
+        y += dy;
+    }
+
+    // Method to interact with the game world
+    void Interact(Map& map) {
+        // Implement interaction logic here
+        // For example, check the type of the tile at the player's current position and perform appropriate interactions.
+        Tile& currentTile = map.tiles[y][x];
+        if (currentTile.type == 1) {
+            // Player is on a grass tile. Perform grass-related interactions.
+        } else if (currentTile.type == 2) {
+            // Player is on a water tile. Perform water-related interactions.
+        } else {
+            // Handle other tile types...
+        }
+    }
+};
+
+
+// Game class managing the game loop and main game logic
+class Game {
+public:
+    Map map;       // Game world map
+    Player player; // Player character
+
+    // Method to start the game
+    void Start() {
+        // Load map from file
+        map.LoadMapFromFile("map_data.txt");
+
+        // Game loop
+        while (true) {
+            // Handle player input
+            int dx, dy;
+            std::cout << "Enter movement (dx dy): ";
+            std::cin >> dx >> dy;
+
+            // Move the player
+            player.Move(dx, dy);
+
+            // Interact with the game world
+            player.Interact(map);
+
+            // Render the game world
+            map.Render();
+        }
+    }
+};
+
+int main() {
+    Game game;
+    game.Start();
+
+    return 0;
+}
+
+
+
+#include <SFML/Graphics.hpp>#include <iostream>
+
+
+int main() {
+    sf::RenderWindow window(sf::VideoMode(800, 600), "Game Window");
+
+
+      sf::View camera;
+    camera.setSize(800, 600);
+    camera.setCenter(400, 300);
+    sf::Texture backgroundTexture;
+    backgroundTexture.loadFromFile("background.png");
+    sf::Sprite background(backgroundTexture);
+
+    sf::Texture playerTexture;
+    playerTexture.loadFromFile("player.png");
+    sf::Sprite player(playerTexture);
+    player.setPosition(400, 300);
+
+
+      while (window.isOpen()) {
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed)
+                window.close();
+        }
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+            camera.move(-5, 0);
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+            camera.move(5, 0);
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+            camera.move(0, -5);
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+            camera.move(0, 5);
+
+        window.setView(camera);
+
+        window.clear();
+
+        window.draw(background);
+        window.draw(player);
+
+        window.display();
+    }
+
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
