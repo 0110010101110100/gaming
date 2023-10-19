@@ -1,0 +1,252 @@
+class Inventory {
+public:
+    Inventory(int capacity) : capacity(capacity) {
+        // Initialize the inventory with a specified capacity
+    }
+
+    void AddItem(Item* item) {
+        if (items.size() < capacity) {
+            items.push_back(item);
+            std::cout << "Added " << item->GetName() << " to the inventory." << std::endl;
+        } else {
+            std::cout << "Inventory is full. Cannot add " << item->GetName() << "." << std::endl;
+        }
+    }
+
+    void RemoveItem(Item* item) {
+        auto it = std::find(items.begin(), items.end(), item);
+        if (it != items.end()) {
+            items.erase(it);
+            std::cout << "Removed " << item->GetName() << " from the inventory." << std::endl;
+        } else {
+            std::cout << item->GetName() << " not found in the inventory." << std::endl;
+        }
+    }
+
+    bool HasItem(Item* item) {
+        return std::find(items.begin(), items.end(), item) != items.end();
+    }
+
+    void SortItems() {
+        // Implement sorting logic here
+        // For example, sort items alphabetically by name.
+        std::sort(items.begin(), items.end(), [](Item* a, Item* b) {
+            return a->GetName() < b->GetName();
+        });
+    }
+
+private:
+    int capacity;
+    std::vector<Item*> items;
+};
+
+class Player {
+public:
+    Player() {
+        inventory = new Inventory(20); // Create an inventory with a capacity of 20
+    }
+
+    ~Player() {
+        delete inventory; // Clean up the inventory when the player is destroyed
+    }
+
+    void AddItemToInventory(Item* item) {
+        inventory->AddItem(item); // Add an item to the player's inventory
+    }
+
+    void UseItemFromInventory(Item* item) {
+        if (inventory->HasItem(item)) {
+            item->Use(); // Use the specified item from the inventory
+            inventory->RemoveItem(item); // Remove the item from the inventory after use
+        } else {
+            std::cout << "You don't have " << item->GetName() << " in your inventory." << std::endl;
+        }
+    }
+
+    void ListInventory() {
+        std::cout << "Your Inventory:" << std::endl;
+        for (Item* item : inventory->GetItems()) {
+            std::cout << "- " << item->GetName() << std::endl;
+        }
+    }
+
+private:
+    Inventory* inventory;
+};
+
+class HealthPotion : public Item {
+public:
+    HealthPotion() : Item("Health Potion", 10) {
+        // Initialize the health potion item
+    }
+
+    void Use() override {
+        // Apply the healing effect to the player
+        std::cout << "You drink the " << GetName() << ". It restores 10 health points." << std::endl;
+    }
+};
+// Implement combat mechanics
+class CombatSystem {
+public:
+    // Calculate hit and damage between attacker and defender
+    void calculateHit(Character& attacker, Character& defender) {
+        // Code to calculate hit chance and damage
+        // Apply damage to the defender based on attacker's attack power and defender's defense
+        // Handle critical strikes, status effects, and other combat mechanics
+    }
+};
+
+
+// Implement character statistics
+class Character {
+public:
+    int healthPoints;
+    int attackPower;
+    int defense;
+    // Add other statistics as needed
+
+    // Reduce character's health points based on incoming damage
+    void takeDamage(int damage) {
+        // Code to reduce character's health points based on damage
+        // Apply defense reduction or damage mitigation
+        // Handle character death if health points reach zero
+    }
+};
+
+// Handle input and user interaction
+void handleInput() {
+    // Code to handle user inputs for combat actions, such as attacking, using skills, or navigating menus
+    // Map input events to corresponding actions in the game
+    // Update the game state and character behavior based on user input
+}
+
+
+// Manage combat state and flow
+enum class CombatState {
+    Initiation,
+    TurnBased,
+    Victory,
+    Defeat,
+    // Add other combat states as needed
+};
+
+CombatState currentCombatState;
+
+void updateCombat() {
+    switch (currentCombatState) {
+        case CombatState::Initiation:
+            // Code to handle combat initiation, such as setting up entities, turn order, etc.
+            break;
+        case CombatState::TurnBased:
+            // Code to handle turn-based combat flow, including actions for each entity
+            break;
+        case CombatState::Victory:
+            // Code to handle victory condition, such as rewards and transitioning to a new state
+            break;
+        case CombatState::Defeat:
+            // Code to handle defeat condition, such as game over or retry options
+            break;
+    }
+}
+
+
+// Integrate combat with other game systems
+class InventorySystem {
+public:
+    // Use an item during combat
+    void useItem(Character& character, Item& item) {
+        // Code to apply item effects based on the character and item properties
+        // Modify character statistics or trigger specific combat actions
+        // Handle item consumption or removal from inventory
+    }
+};
+
+
+
+
+//quests
+
+
+#include <iostream>#include <vector>
+
+class Quest {
+public:
+    std::string title;
+    std::string description;
+    bool isActive;
+    bool isCompleted;
+    std::vector<int> objectiveIDs;
+
+    Quest(const std::string& title, const std::string& description)
+        : title(title), description(description), isActive(false), isCompleted(false) {}
+};
+
+class Objective {
+public:
+    std::string description;
+    bool isCompleted;
+
+    Objective(const std::string& description)
+        : description(description), isCompleted(false) {}
+};
+
+
+// Define the Objective struct
+struct Objective {
+    std::string description;
+    bool isCompleted = false;
+};
+
+int main() {
+    // Create quests and objectives
+    Quest quest1("Quest 1", "Complete objectives A, B, and C");
+    quest1.isActive = true;
+    quest1.objectiveIDs.push_back(1);
+    quest1.objectiveIDs.push_back(2);
+    quest1.objectiveIDs.push_back(3);
+
+    Objective objective1("Objective A: Collect 5 items");
+    Objective objective2("Objective B: Defeat 10 enemies");
+    Objective objective3("Objective C: Reach level 10");
+
+    // Game loop
+    while (true) {
+        // Check if objectives are completed
+        bool allObjectivesCompleted = true;
+        for (int objectiveID : quest1.objectiveIDs) {
+            if (!objectives[objectiveID].isCompleted) {
+                allObjectivesCompleted = false;
+                break;
+            }
+        }
+
+        // Complete quest if all objectives are completed
+        if (allObjectivesCompleted) {
+            quest1.isCompleted = true;
+            quest1.isActive = false;
+        }
+
+        // Display quest and objective status
+        std::cout << "Quest: " << quest1.title << std::endl;
+        std::cout << "Description: " << quest1.description << std::endl;
+        std::cout << "Status: " << (quest1.isActive ? "Active" : "Inactive") << std::endl;
+        std::cout << "Objectives:" << std::endl;
+        for (int objectiveID : quest1.objectiveIDs) {
+            std::cout << "- " << objectives[objectiveID].description << " (" << (objectives[objectiveID].isCompleted ? "Completed" : "Incomplete") << ")" << std::endl;
+        }
+        std::cout << "--------------------------------" << std::endl;
+
+        // Game logic and other code...
+
+        // Break the loop if the quest is completed
+        if (quest1.isCompleted) {
+            break;
+        }
+    }
+
+    return 0;
+}
+
+
+
+
